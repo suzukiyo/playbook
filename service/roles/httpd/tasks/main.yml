@@ -1,0 +1,8 @@
+- name: apache(httpd)のインストール
+  yum: name=httpd state=latest
+
+- name: firewalld で http を許可
+  firewalld: permanent=True servie=http state=enabled immediate=true
+
+- name: サービスの起動
+  service: name=httpd state=started enabled=yes

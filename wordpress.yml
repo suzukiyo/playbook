@@ -1,0 +1,9 @@
+- hosts: wordpress
+  vars:
+    wordpress_url: https//ja.wordpress.org/wordpress-4.4.2-ja.tar.gz
+  remote_user: suzukiyo
+  become: yes
+
+  tasks:
+  - name: apache(httpd)のインストール
+    yum: name=httpd state=latest

@@ -1,0 +1,9 @@
+- name: deploy webservers
+  hosts: webservers
+  become: yes
+  roles:
+    - python
+    - common
+    - httpd
+    - php
+    - wordpress

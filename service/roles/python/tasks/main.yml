@@ -1,0 +1,51 @@
+    - name: install basic package
+      yum: name={{item}} state=installed
+      become: yes
+      with_items:
+        - vim
+        - git
+        - rsync
+
+    - name: isntall build python package
+      become: yes
+      yum: name={{item}} state=installed
+      with_items:
+         - gcc
+         - gcc-c++
+         - readline-devel
+         - zlib-devel
+         - openssl-devel
+         ## for lxml
+         - libxml2-devel
+         - libxslt-devel
+         ## for file copy
+         - libselinux-python
+
+    - name: install pyenv
+      args:
+        ## guard for only once.
+        creates: ~/.pyenv
+      shell: |
+        git clone https://github.com/yyuu/pyenv.git ~/.pyenv
+        ## add pyenv env
+        (
+         echo 'export PYENV_ROOT=~/.pyenv'
+         echo 'export PATH=$PYENV_ROOT/bin:$PATH'
+         echo 'eval "$(pyenv init -)"'
+        ) >> ~/.bashrc
+        source ~/.bashrc
+        # install python
+        pyenv install {{python_version}}
+        pyenv rehash
+        pyenv global {{python_version}}
+
+    - name: Install Python Pip
+      shell: |
+        curl -kL https://raw.github.com/pypa/pip/master/contrib/get-pip.py
+
+    - name: pip install pkgs
+      pip: name={{item}}
+      with_items:
+        - flask
+        - lxml
+        - uwsgi

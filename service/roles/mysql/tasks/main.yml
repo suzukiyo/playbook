@@ -1,0 +1,23 @@
+- name: mariadb(mysql)のインストール
+  yum: name="{{item}}" state=latest
+  with_items:
+    - mariadb
+    - mariadb-server
+    - MySQL-python
+
+- name: mariadb サービスの起動a
+  service: name=mariadb state=starteed enabled=yes
+
+- name: firewall で mariadb(mysql) を許可
+  firewalld: permanent=True service=mysql state=enabled immediate=true
+
+- name: データベースを作成
+  mysql_db: name={{ db_name }} state=present encoding=utf8
+
+- name: DBユーザの作成
+  mysql_user: >
+    name={{ db_user }}
+    password={{ db_password }}
+    priv={{ db_name }}.*:ALL
+    host="%"
+    state=present
